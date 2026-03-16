@@ -9,8 +9,9 @@ env.config();
 export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
-    const exist = await User.find({ email });
-    if (email) {
+    const normalEmail = email.toLowerCase().trim();
+    const exist = await User.findOne({ email: normalEmail });
+    if (exist) {
       return res.status(400).json({ message: 'User already exists' });
     }
     const hashPass = await bcrypt.hash(password, 10);
